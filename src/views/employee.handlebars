@@ -1,26 +1,48 @@
-<h1>Employee Information</h1>
-<div class="row">
-    <div class="col-12 col-lg-6">
+<div class="row my-4">
+    <h1>Employee Information</h1>
+    <div class="card-group">
         {{!-- Info usuario --}}
         <div class="card">
-            <img src="..." class="card-img-top" alt="...">
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                class="card-img-top"  alt="Employee working">
             <div class="card-body">
                 <h5 class="card-title">{{employee.firstname}} {{employee.lastname}}</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Number: {{employee.employeenumber}}</h6>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Extension: {{employee.extension}}</li>
-                {{!-- <li class="list-group-item">Email {{</li> --}}
-                <li class="list-group-item">A third item</li>
+                <li class="list-group-item">Extension: <span class="fw-semibold">{{employee.extension}}</span> </li>
+                <li class="list-group-item">Email: <span class="fw-semibold">{{employee.email}}</span></li>
+                <li class="list-group-item">Position: <span class="fw-semibold">{{employee.jobtitle}}</span></li>
             </ul>
-            <div class="card-body">
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-            </div>
         </div>
-    </div>
-    <div class="col-12 col-lg-6">
+
+
         {{!-- Info usuario oficina --}}
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1519748174344-16e5d53bda7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                class="card-img-top"  alt="Office building">
+            <div class="card-body">
+                <h5 class="card-title">Office: {{employee.officecode_office.city}} {{employee.officecode_office.state}},
+                    {{employee.officecode_office.country}}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Territory: {{employee.officecode_office.territory}}
+                </h6>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Address: <span
+                        class="fw-semibold">{{employee.officecode_office.addressline1}},
+                        {{employee.officecode_office.addressline2}}</span> </li>
+                <li class="list-group-item">Phone: <span class="fw-semibold">{{employee.officecode_office.phone}}</span>
+                </li>
+                <li class="list-group-item">Postal code: <span
+                        class="fw-semibold">{{employee.officecode_office.postalcode}}</span></li>
+            </ul>
+            {{!-- <div class="card-body">
+                <a href="/gestion-vendedores" class="card-link">Volver</a>
+            </div> --}}
+        </div>
+
+    </div>
+    <div class="d-grid mt-3">
+        <a class="btn btn-success" href="/gestion-vendedores">Volver</a>
     </div>
 </div>

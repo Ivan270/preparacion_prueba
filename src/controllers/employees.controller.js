@@ -16,9 +16,10 @@ const findById = async (req, res) => {
 				},
 			],
 		});
-		console.log(employee);
-		res.status(200).json({ code: 200, data: employee });
-	} catch (error) {}
+		res.status(200).json({ code: 200, message:'ok', data: employee });
+	} catch (error) {
+		res.status(500).json({code:500, message: 'Error al buscar empleado por ID'})
+	}
 };
 
 const findSalesManagers = async (req, res) => {

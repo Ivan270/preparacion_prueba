@@ -43,20 +43,27 @@ const employeesOffice = async (req, res) => {
 };
 
 const employee = async (req, res) => {
-	let { id } = req.params;
-
-	let requestOptions = {
-		method: 'GET',
-		redirect: 'follow',
-	};
-	let response = await fetch(
-		`http://localhost:3000/api/v1/employees/id/${id}`,
-		requestOptions
-	);
-	let employee = await response.json();
-	res.render('employee', {
-		employee: employee.data,
-	});
+	try {
+		
+		let { id } = req.params;
+	
+		let requestOptions = {
+			method: 'GET',
+			redirect: 'follow',
+		};
+		let response = await fetch(
+			`http://localhost:3000/api/v1/employees/id/${id}`,
+			requestOptions
+		);
+		let employee = await response.json();
+		res.render('employee', {
+			employee: employee.data,
+		});
+	} catch (error) {
+		res
+			.status(500)
+			.json({ code: 500, message: 'Error al consultar empleado' });
+	}
 };
 
 
