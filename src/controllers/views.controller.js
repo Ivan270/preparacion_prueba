@@ -1,9 +1,10 @@
 import Office from '../models/Office.model.js';
 import Employee from '../models/Employee.model.js';
+import { Sequelize, Op } from 'sequelize';
 
 const home = (req, res) => {
 	res.render('home', {
-		home: true
+		home: true,
 	});
 };
 const employeesOffice = async (req, res) => {
@@ -31,7 +32,7 @@ const employeesOffice = async (req, res) => {
 		res.render('gestion', {
 			offices: oficinas,
 			managers,
-			gestion: true
+			gestion: true,
 		});
 	} catch (error) {
 		console.log(error);
@@ -41,8 +42,8 @@ const employeesOffice = async (req, res) => {
 	}
 };
 
-const employee = async(req,res)=>{
-	let {id} = req.params;
+const employee = async (req, res) => {
+	let { id } = req.params;
 
 	let requestOptions = {
 		method: 'GET',
@@ -54,13 +55,15 @@ const employee = async(req,res)=>{
 	);
 	let employee = await response.json();
 	res.render('employee', {
-		employee: employee.data
-	})
-}
+		employee: employee.data,
+	});
+};
+
+
 
 const controller = {
 	home,
 	employeesOffice,
-	employee
+	employee,
 };
 export default controller;

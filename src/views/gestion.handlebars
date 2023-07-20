@@ -17,7 +17,7 @@
                 <select id="managerId" class="form-select" name="officecode" aria-label="Default select example">
                     <option selected disabled value=''>Selecciona un Manager</option>
                     {{#each managers.data}}
-                        <option value="{{this.officecode}}">{{this.firstname}} {{this.lastname}}</option>
+                        <option value="{{this.jobtitle}}">{{this.firstname}} {{this.lastname}}</option>
                     {{/each}}
                 </select>
             </div>
@@ -110,7 +110,7 @@
         if (idOficina == '' && idManager == '') {
             alert('Debes elegir una opción de Oficinas o Managers')
 
-        } else if (idOficina != '' && idManager != ''){
+        } else if (idOficina != '' && idManager != '') {
             alert('Debes elegir solo una opción')
             formOficinas.reset()
         }
@@ -118,14 +118,63 @@
             tableBody.innerHTML = ''
             consultar(idOficina);
             formOficinas.reset()
-        }else if (idManager != '') {
+        } else if (idManager != '') {
             tableBody.innerHTML = ''
-            consultar(idManager);
+            consultarPorJobtitle(idManager);
             formOficinas.reset()
-        } 
+        }
     })
-    const relocate = (id)=>{
-        location.href=`/employee/id/${id}`
+    const relocate = (id) => {
+        location.href = `/employee/id/${id}`
     }
+    const consultarPorJobtitle = async (jobtitle) => {
+        try{
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const raw = JSON.stringify({
+                "jobtitle": jobtitle
+            });
+            const requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+            //Encuentra las oficinas que pertenecen al mismo territorio que el contenido en el Jobtitle del Sales Manager
+            let response = await fetch(`http://localhost:3000/api/v1/offices/territory/jobtitle/${jobtitle}`, requestOptions)
+            let offices = await response.json();
+            // Encuentra todos los managers
+            let responseManagers = await fetch("http://localhost:3000/api/v1/employees/sales-managers", requestOptions);
+            let managers = await responseManagers.json();
+            let gerente = {
+                firstname: 'N/A',
+                lastname: ''
+            };
+            // Asigna un manager dependiendo del territorio
+            managers.data.forEach(manager => {
+                if (manager.jobtitle.includes(jobtitle)) {
+                    gerente = manager
+                }
+            })
+            // Genera datos a partir de las consultas anteriores
+            offices.data.forEach(office => {
+                office.employees.forEach(employee=>{
+
+                    tableBody.innerHTML += `
+                    <tr >
+                        <th scope="row">${employee.employeenumber}</th>
+                        <td>${employee.firstname} ${employee.lastname}</td>
+                        <td>${employee.email}</td>
+                        <td>${office.city}</td>
+                        <td>${gerente.firstname} ${gerente.lastname}</td>
+                        <td><a class="btn btn-primary btn-sm" href="/employee/id/${employee.employeenumber}">Accion</a></td>
+                    </tr>
+                    `
+                })
+            })
+        } catch(error){
+            console.log(error)
+        }
+    }
+
 
 </script>

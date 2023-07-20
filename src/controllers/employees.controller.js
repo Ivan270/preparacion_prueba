@@ -1,28 +1,25 @@
 import Employee from '../models/Employee.model.js';
 import Office from '../models/Office.model.js';
-import Sequelize from 'sequelize';
+import { Sequelize, Op } from 'sequelize';
 
-const findById = async (req,res)=>{
+const findById = async (req, res) => {
 	try {
-		let {id} = req.params;
+		let { id } = req.params;
 		let employee = await Employee.findByPk(id, {
 			include: [
 				{
 					model: Office,
 					as: 'officecode_office',
-					attributes: 
-						{
-							exclude: ['officecode']
-						}
-				}
-			]
+					attributes: {
+						exclude: ['officecode'],
+					},
+				},
+			],
 		});
-		console.log(employee)
-		res.status(200).json({code:200, data: employee})
-	} catch (error) {
-		
-	}
-}
+		console.log(employee);
+		res.status(200).json({ code: 200, data: employee });
+	} catch (error) {}
+};
 
 const findSalesManagers = async (req, res) => {
 	try {
@@ -40,8 +37,9 @@ const findSalesManagers = async (req, res) => {
 	}
 };
 
+
 const controller = {
 	findSalesManagers,
-	findById
+	findById,
 };
 export default controller;
