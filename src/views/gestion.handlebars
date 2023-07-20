@@ -1,0 +1,131 @@
+<section class="my-5">
+    <h1>Gestión de Vendedores</h1>
+    <form id="formOficinas">
+        <div class="row">
+            <p class="small">Elija buscar por Oficina o por Sales Manager</p>
+            <div class="col-12 col-lg-6 mb-3">
+                <label for="officecode">Oficina</label>
+                <select id="officeId" class="form-select" name="officecode" aria-label="Default select example">
+                    <option selected disabled value=''>Selecciona una oficina</option>
+                    {{#each offices.data}}
+                        <option value="{{this.officecode}}">{{this.city}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-12 col-lg-6 mb-3">
+                <label for="officecode">Sales Manager</label>
+                <select id="managerId" class="form-select" name="officecode" aria-label="Default select example">
+                    <option selected disabled value=''>Selecciona un Manager</option>
+                    {{#each managers.data}}
+                        <option value="{{this.officecode}}">{{this.firstname}} {{this.lastname}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Buscar</button>
+    </form>
+</section>
+<section>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Num Empleado</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Mail</th>
+                <th scope="col">Oficina</th>
+                <th scope="col">Manager</th>
+                <th scope="col">Accion</th>
+                <a href=""></a>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+
+        </tbody>
+    </table>
+</section>
+
+<script>
+    // buscar oficina por id
+
+    const formOficinas = document.getElementById('formOficinas');
+
+
+    const consultar = async (id) => {
+        try {
+            let requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            const response = await fetch("http://localhost:3000/api/v1/offices/id/" + id, requestOptions)
+            const oficina = await response.json();
+            let territorio = oficina.data.territory
+
+
+            let responseManagers = await fetch("http://localhost:3000/api/v1/employees/sales-managers", requestOptions);
+            let managers = await responseManagers.json();
+            let gerente = {
+                firstname: 'N/A',
+                lastname: ''
+            };
+            // Asigna un manager dependiendo del territorio
+            managers.data.forEach(manager => {
+                if (manager.jobtitle.includes(territorio)) {
+                    gerente = manager
+                }
+
+            })
+            oficina.data.employees.forEach(employee => {
+                tableBody.innerHTML += `
+                <tr >
+                    <th scope="row">${employee.employeenumber}</th>
+                    <td>${employee.firstname} ${employee.lastname}</td>
+                    <td>${employee.email}</td>
+                    <td>${oficina.data.city}</td>
+                    <td>${gerente.firstname} ${gerente.lastname}</td>
+                    <td><a class="btn btn-primary btn-sm" href="/employee/id/${employee.employeenumber}">Accion</a></td>
+                </tr>
+                `
+
+            })
+        }
+
+        catch (error) {
+            console.log(error)
+        }
+    }
+    const consultar2 = async () => {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        let response = await fetch("http://localhost:3000/api/v1/offices", requestOptions)
+        let oficinas = await response.json();
+    }
+    // Consulta por OFICINA
+    formOficinas.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        let idOficina = officeId.value;
+        let idManager = managerId.value;
+        if (idOficina == '' && idManager == '') {
+            alert('Debes elegir una opción de Oficinas o Managers')
+
+        } else if (idOficina != '' && idManager != ''){
+            alert('Debes elegir solo una opción')
+            formOficinas.reset()
+        }
+        else if (idOficina != '') {
+            tableBody.innerHTML = ''
+            consultar(idOficina);
+            formOficinas.reset()
+        }else if (idManager != '') {
+            tableBody.innerHTML = ''
+            consultar(idManager);
+            formOficinas.reset()
+        } 
+    })
+    const relocate = (id)=>{
+        location.href=`/employee/id/${id}`
+    }
+
+</script>
